@@ -6,9 +6,11 @@ It is intended to be used on hosted servers, where a base image is given and the
 
 Choose Ubuntu 14.04 as operating system. 
 
-Clone the repository. 
+Clone the repository. Run as root. Enjoy.
 
-    git clone git@github.com:dtag-dev-sec/t-pot-autoinstall.git
+    git clone https://github.com/dtag-dev-sec/t-pot-autoinstall.git
     cd t-pot-autoinstall/
     sudo su
     ./install.sh
+    
+
