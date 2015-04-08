@@ -98,8 +98,8 @@ fuECHO "Everything looks OK..."
 
 # Let's log for the beauty of it
 set -e
-exec 2> >(tee "install.err")
-exec > >(tee "install.log")
+exec 2> >(tee "t-pot-error.log")
+exec > >(tee "t-pot-install.log")
 
 # Let's modify the sources list
 sed -i '/cdrom/d' /etc/apt/sources.list
@@ -211,8 +211,11 @@ cp -R $cwdir/upstart/* /etc/init/
 # Let's take care of some files and permissions
 chmod 660 -R /data
 chown tpot:tpot -R /data
-chown $myuser:$myuser /home/$myuser/*.sh
+chown $myuser:$myuser /home/$myuser/2fa_enable.sh
+
+# we already have ssh enabled. so we can remove this.
+rm /home/$myuser/ssh_enable.sh
 
 # Final steps
-fuECHO "### Thanks for your patience. Now rebooting."
-mv $cwdir/etc/rc.local /etc/rc.local && rm -rf $cwdir && chage -d 0 $myuser && sleep 2 && reboot
+fuECHO "### Thanks for your patience. Now rebooting. Remember to login on SSH port 64295 next time!"
+mv $cwdir/etc/rc.local /etc/rc.local && rm -rf $cwdir && sleep 2 && rm $0 &&reboot
