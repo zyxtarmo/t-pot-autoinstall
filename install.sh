@@ -218,4 +218,4 @@ rm /home/$myuser/ssh_enable.sh
 
 # Final steps
 fuECHO "### Thanks for your patience. Now rebooting. Remember to login on SSH port 64295 next time!"
-mv $cwdir/etc/rc.local /etc/rc.local && rm -rf $cwdir && sleep 2 && rm $0 &&reboot
+mv $cwdir/etc/rc.local /etc/rc.local && rm -rf $cwdir && sleep 2 &&reboot
