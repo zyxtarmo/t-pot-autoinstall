@@ -13,4 +13,4 @@ Clone the repository. Run as root. Enjoy.
     sudo su
     ./install.sh
     
-
+The docker container status is periodically written to ~/docker-status, so you can check if everything is running. 
