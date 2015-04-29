@@ -157,8 +157,6 @@ EOF
 sed -i '14,15d' $cwdir/etc/issue
 echo "Container status is written to ~/docker-status" >> $cwdir/etc/issue
 
-exit 1
-
 # Let's load docker images from remote
 fuECHO "### Downloading docker images from DockerHub. Please be patient, this may take a while."
 for name in $(cat $cwdir/data/images.conf) 
