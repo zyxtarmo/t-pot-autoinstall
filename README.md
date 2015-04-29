@@ -1,6 +1,6 @@
 # Autoinstall T-Pot on Ubuntu 14.04
 
-This script will install T-Pot on a fresh Ubuntu 14.04. LTS. 
+This script will install [T-Pot](http://dtag-dev-sec.github.io/mediator/feature/2015/03/17/concept.html) on a fresh Ubuntu 14.04. LTS. 
 
 It is intended to be used on hosted servers, where a base image is given and there is no ability to install custom ISO images. 
 
