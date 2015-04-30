@@ -3,7 +3,7 @@
 # T-Pot install script    							   #
 # Ubuntu server 14.04, x64                             #
 #                                                      #
-# v0.1 by av, DTAG 2015-04-08						   #
+# v0.2 by av, DTAG 2015-04-29						   #
 #                                                      # 
 # based on T-Pot Community Edition Script 			   #
 # v0.46 by mo, DTAG, 2015-03-09			   			   #
@@ -30,20 +30,20 @@ Make sure the SSH login for your normal user is working.
 
 # check for superuser
 if [[ $EUID -ne 0 ]]; then
-    fuECHO "This script must be run as root. Do not run via sudo! Script will abort!"
+    fuECHO "### This script must be run as root. Do not run via sudo! Script will abort!"
     exit 1
 fi
 
-fuECHO "Which user do you usually work with? This script is invoked by root, but what is your normal username?"
+fuECHO "### Which user do you usually work with? This script is invoked by root, but what is your normal username?"
 read myuser
 
 # Make sure all the necessary prerequisites are met.
-fuECHO "Checking prerequisites..." 
+fuECHO "### Checking prerequisites..." 
 
 # check if user exists
 if ! grep -q $myuser /etc/passwd
 	then 
-		fuECHO "User '$myuser' not found. Script will abort!"
+		fuECHO "### User '$myuser' not found. Script will abort!"
         exit 1
 fi
 
@@ -52,14 +52,14 @@ fi
 sshstatus=$(service ssh status)
 if [[ ! $sshstatus =~ "ssh start/running, process" ]];
 	then
-		echo "SSH is not running. Script will abort!"
+		echo "### SSH is not running. Script will abort!"
 		exit 1
 fi
 	
 # check for available, non-empty SSH key 
 if ! fgrep -qs ssh /home/$myuser/.ssh/authorized_keys 
     then
-        fuECHO "No SSH keys for user '$myuser' found. Script will abort!"
+        fuECHO "### No SSH keys for user '$myuser' found. Script will abort!"
         exit 1
 fi
 
@@ -74,14 +74,14 @@ fi
 # check if pubkey authentication is active
 if ! fgrep -q "PubkeyAuthentication yes" /etc/ssh/sshd_config
 	then
-		fuECHO "Public Key Authentication is disabled /etc/ssh/sshd_config. Enable it by changing PubkeyAuthentication to 'yes'."
+		fuECHO "### Public Key Authentication is disabled /etc/ssh/sshd_config. Enable it by changing PubkeyAuthentication to 'yes'."
 		exit 1
 fi
 
 # check for ubuntu 14.04. distribution
 if ! fgrep  -q 'Ubuntu 14.04' /etc/issue
     then
-        fuECHO "Wrong distribution. Must be Ubuntu 14.04.*. Script will abort! "
+        fuECHO "### Wrong distribution. Must be Ubuntu 14.04.*. Script will abort! "
         exit 1
 fi
 
@@ -92,7 +92,7 @@ if [ -f install.log ];
 fi
 
 
-fuECHO "Everything looks OK..."
+fuECHO "### Everything looks OK..."
 
 # End checks
 
