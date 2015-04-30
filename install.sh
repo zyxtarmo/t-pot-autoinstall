@@ -1,13 +1,13 @@
 #!/bin/bash
-########################################################
-# T-Pot install script    							   #
-# Ubuntu server 14.04, x64                             #
-#                                                      #
-# v0.2 by av, DTAG 2015-04-29						   #
-#                                                      # 
-# based on T-Pot Community Edition Script 			   #
-# v0.46 by mo, DTAG, 2015-03-09			   			   #
-########################################################
+#########################################################
+# T-Pot install script                                  #
+# Ubuntu server 14.04, x64                              #
+#                                                       #
+# v0.2 by av, DTAG 2015-04-29                           #
+#                                                       #
+# based on T-Pot Community Edition Script               #
+# v0.46 by mo, DTAG, 2015-03-09                         #
+#########################################################
 
 
 # Let's create a function for colorful output
@@ -20,10 +20,10 @@ tput setaf $myWHT
 }
 
 echo "
-########################################################
-# T-Pot install script    							   #
-# for Ubuntu server 14.04, x64                         #
-########################################################
+#########################################################
+# T-Pot install script                                  #
+# for Ubuntu server 14.04, x64                          #
+#########################################################
 
 Make sure the SSH login for your normal user is working.
 "
@@ -87,8 +87,9 @@ fi
 
 # Let's make sure there is a warning if running for a second time
 if [ -f install.log ];
-  then fuECHO "### Running more than once may complicate things. Erase install.log if you are really sure."
-  exit 1;
+  then 
+        fuECHO "### Running more than once may complicate things. Erase install.log if you are really sure."
+        exit 1
 fi
 
 
