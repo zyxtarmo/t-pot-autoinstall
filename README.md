@@ -5,9 +5,11 @@ It is intended to be used on hosted servers, where an Ubuntu base image is given
 Successfully tested on Amazon's EC2 Ubuntu 14.04.2 x64 as well as on vanilla Ubuntu 14.04.x in VMware.
 
 Choose Ubuntu 14.04.x as operating system. Make sure you have your SSH key added to your account (~/.ssh/authorized_keys). 
-and meet the [system requirements](http://dtag-dev-sec.github.io/mediator/feature/2015/03/17/concept.html#requirements) (2GB RAM, 40GB disk, network exposure).
+and meet the [system requirements](http://dtag-dev-sec.github.io/mediator/feature/2015/03/17/concept.html#requirements) (>=2GB RAM, 40GB disk, network exposure) for a full T-Pot instance. 
 
-Clone the repository. Run as root. Enjoy.
+In case you have limited ressources, you can choose a "honeypot only"-mode during install, which will install T-Pot without suricata and ELK dashboard (>=1GB RAM required).
+
+So, clone the repository. Run as root. Enjoy.
 
     git clone https://github.com/dtag-dev-sec/t-pot-autoinstall.git
     cd t-pot-autoinstall/
