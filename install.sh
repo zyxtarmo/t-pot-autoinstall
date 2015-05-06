@@ -1,13 +1,13 @@
 #!/bin/bash
-#########################################################
-# T-Pot install script                                  #
-# Ubuntu server 14.04, x64                              #
-#                                                       #
-# v0.2 by av, DTAG 2015-04-29                           #
-#                                                       #
-# based on T-Pot Community Edition Script               #
-# v0.46 by mo, DTAG, 2015-03-09                         #
-#########################################################
+##########################################################
+# T-Pot install script                                   #
+# Ubuntu server 14.04, x64                               #
+#                                                        #
+# v0.3 by av, DTAG 2015-05-06                            #
+#                                                        #
+# based on T-Pot Community Edition Script                #
+# v0.46 by mo, DTAG, 2015-03-09                          #
+##########################################################
 
 
 # Let's create a function for colorful output
@@ -19,13 +19,14 @@ echo $1 "$2"
 tput setaf $myWHT
 }
 
+fuECHO ""
 echo "
-#########################################################
-# T-Pot install script                                  #
-# for Ubuntu server 14.04, x64                          #
-#########################################################
+##########################################################
+# T-Pot install script                                   #
+# for Ubuntu server 14.04, x64                           #
+##########################################################
 
-Make sure the SSH login for your normal user is working.
+Make sure the SSH login for your normal user is working!
 "
 
 # check for superuser
@@ -34,11 +35,13 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
-fuECHO "### Which user do you usually work with? This script is invoked by root, but what is your normal username?"
+echo "Which user do you usually work with? This script is invoked by root, but what is your normal username?"
+echo -n "Enter username: "
 read myuser
 
 # Make sure all the necessary prerequisites are met.
-fuECHO "### Checking prerequisites..." 
+echo ""
+echo "Checking prerequisites..." 
 
 # check if user exists
 if ! grep -q $myuser /etc/passwd
@@ -67,7 +70,7 @@ fi
 sshport=$(fgrep Port /etc/ssh/sshd_config|cut -d ' ' -f2)
 if [ $sshport != 22 ];
     then
-        fuECHO "SSH port is not 22. Script will abort!"
+        fuECHO "### SSH port is not 22. Script will abort!"
         exit 1
 fi
 
@@ -93,7 +96,48 @@ if [ -f install.log ];
 fi
 
 
-fuECHO "### Everything looks OK..."
+echo "Everything looks OK..."
+echo ""
+clear
+echo "##########################################################"
+echo "#                                                        #"
+echo "#     How do you want to proceed? Enter '1' or '2'.      #"
+echo "#                                                        #"
+echo "# 1 - Install T-Pot                                      #" 
+echo "#     Recommended resources: >=2GB RAM, >=40GB disk      #"
+echo "#     Services: honeytrap, kippo, dionaea, glastopf,     #" 
+echo "#     suricata, kibana dashboard (ELK), EWS              #"
+echo "#                                                        #"
+echo "# 2 - Install T-Pot's honeypots only.                    #"
+echo "#     No kibana dashboard (ELK), no suricata, but        #" 
+echo "#     fewer resources required.                          #"
+echo "#     Recommended resources: >=1GB RAM, >=30GB disk      #"
+echo "#     Services: honeytrap, kippo, dionaea, glastopf, EWS #"
+echo "#                                                        #"
+echo "##########################################################"
+echo ""
+echo -n "Your choice: "
+read choice
+	if [[ "$choice" != [1-2] ]];
+		then
+			fuECHO "### You typed $choice, which I don't recognize. It's either '1' or '2'. Script will abort!"   
+            exit 1
+	fi
+	case $choice in
+	1)
+    	echo "You chose a full T-Pot installation. Great choice!"
+    	mode="normal"
+    	;;
+	2)
+    	echo "You chose to install T-Pot's honeypots only. Hold tight!"
+    	mode="hponly"
+    	;;
+	*)
+    	fuECHO "### You typed $choice, which I don't recognize. It's either '1' or '2'. Script will abort!"
+    	exit 1
+    	;;
+	esac
+
 
 # End checks
 
@@ -131,6 +175,15 @@ rm -rf $cwdir/tpotce/
 rm $cwdir/installer/install1.sh $cwdir/installer/install2.sh
 cwdir=$cwdir/installer/
 cd $cwdir
+
+# apply changes for "T-Pot's honeypot only"-install, no suricata and ELK 
+if [[ $mode == "hponly" ]];
+	then
+		rm $cwdir/upstart/elk.conf 
+		rm $cwdir/upstart/suricata.conf
+		sed -i '5d' $cwdir/data/images.conf
+		sed -i '6d' $cwdir/data/images.conf
+fi
 
 # Let's add a new user
 fuECHO "### Adding new user."
