@@ -3,10 +3,10 @@
 # T-Pot install script                                   #
 # Ubuntu server 14.04, x64                               #
 #                                                        #
-# v0.5 by av, DTAG 2015-08-10                            #
+# v0.6 by av, DTAG 2015-10-21                            #
 #                                                        #
 # based on T-Pot Community Edition Script                #
-# v0.48 by mo, DTAG, 2015-07-08                          #
+# v0.49 by mo, DTAG, 2015-08-14                          #
 ##########################################################
 
 
@@ -149,22 +149,20 @@ exec > >(tee "t-pot-install.log")
 # Let's modify the sources list
 sed -i '/cdrom/d' /etc/apt/sources.list
 
-# Let's add the docker repository
-fuECHO "### Adding docker repository."
-apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 36A1D7869245C8950F966E92D8576A8BA88D21E9
-tee /etc/apt/sources.list.d/docker.list <<EOF
-deb https://get.docker.io/ubuntu docker main
-EOF
-
 # Let's pull some updates
 fuECHO "### Pulling Updates."
 apt-get update -y
 fuECHO "### Installing Updates."
 apt-get dist-upgrade -y
 
+# Let's install docker
+fuECHO "### Installing docker."
+wget -qO- https://get.docker.com/gpg | apt-key add -
+wget -qO- https://get.docker.com/ | sh
+
 # Let's install all the packages we need
 fuECHO "### Installing packages."
-apt-get install curl ethtool git ntp libpam-google-authenticator lxc-docker-1.7.0 vim -y
+apt-get install curl ethtool git ntp libpam-google-authenticator vim -y
 
 # getting t-pot git repo
 fuECHO "### Cloning T-Pot Repository."
@@ -259,7 +257,11 @@ tee -a /etc/crontab <<EOF
 
 # Update IP and erase check.lock if it exists
 27 15 * * * root /etc/rc.local
+
+# Check for updated packages every sunday, upgrade and reboot
+27 16 * * 0   root  sleep \$((RANDOM %600)); apt-get autoclean -y; apt-get autoremove -y; apt-get update -y; apt-get upgrade -y; apt-get upgrade docker-engine -y; sleep 5; reboot
 EOF
+
 
 # Let's take care of some files and permissions
 chmod 500 $cwdir/bin/*
