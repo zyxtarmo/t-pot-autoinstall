@@ -3,7 +3,7 @@
 # T-Pot install script                                   #
 # Ubuntu server 14.04, x64                               #
 #                                                        #
-# v0.6 by av, DTAG 2015-10-21                            #
+# v0.7 by av, DTAG 2015-12-17                            #
 #                                                        #
 # based on T-Pot Community Edition Script                #
 # v0.49 by mo, DTAG, 2015-08-14                          #
@@ -167,7 +167,7 @@ apt-get install curl ethtool git ntp libpam-google-authenticator vim -y
 # getting t-pot git repo
 fuECHO "### Cloning T-Pot Repository."
 cwdir=$(pwd)
-git clone https://github.com/dtag-dev-sec/tpotce.git
+git clone https://github.com/dtag-dev-sec/tpotce.git -b 15.03
 cp -R $cwdir/tpotce/installer/ $cwdir
 rm -rf $cwdir/tpotce/
 rm $cwdir/installer/install1.sh $cwdir/installer/install2.sh
