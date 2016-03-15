@@ -1,13 +1,13 @@
 # Autoinstall T-Pot on Ubuntu 14.04.x 
-This script will install [T-Pot](http://dtag-dev-sec.github.io/mediator/feature/2015/03/17/concept.html) on a fresh Ubuntu 14.04.x LTS (64bit). 
+This script will install [T-Pot 16.03](http://dtag-dev-sec.github.io/mediator/feature/2016/03/11/t-pot-16.03.html) on a fresh Ubuntu 14.04.x LTS (64bit). 
 
 It is intended to be used on hosted servers, where an Ubuntu base image is given and there is no ability to install custom ISO images. 
-Successfully tested on Amazon's EC2 Ubuntu 14.04.2 x64 as well as on vanilla Ubuntu 14.04.x in VMware.
+Successfully tested on Amazon's EC2 Ubuntu 14.04.4 x64 as well as on vanilla Ubuntu 14.04.4 in VMware.
 
 Choose Ubuntu 14.04.x as operating system. Make sure you have your SSH key added to your account (~/.ssh/authorized_keys). 
-and meet the [system requirements](http://dtag-dev-sec.github.io/mediator/feature/2015/03/17/concept.html#requirements) (>=2GB RAM, 40GB disk, network exposure) for a full T-Pot instance. 
+and meet the [system requirements](http://dtag-dev-sec.github.io/mediator/feature/2016/03/11/t-pot-16.03.html#requirements) (>=4GB RAM, 64GB disk, network exposure) for a full T-Pot instance. The system requirements depend on the flavour of T-Pot you intend to run. 
 
-In case you have limited ressources, you can choose a "honeypot only"-mode during install, which will install T-Pot without suricata and ELK dashboard (>=1GB RAM required).
+During setup, you can choose from four different configurations: T-Pot's standard installation, industrial edition, full installation and, in case you have limited ressources, you can opt for a "honeypot only"-mode during install, which will install T-Pot without suricata and ELK dashboard (>=3GB RAM required). 
 
 So, clone the repository. Run as root. Enjoy.
 
