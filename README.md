@@ -19,3 +19,5 @@ So, clone the repository. Run as root. Enjoy.
 The docker container status is periodically written to ~/docker-status, so you can check if everything is running. 
 
 If you run into problems during installation it might be related to your hoster's custom Ubuntu update repositories. So far, we do not have a solution for this. 
+
+In case you have *very limited resources*, you can still run last year's “*honeypot-only*”-version, which lacks the suricata and kibana dashboard (ELK) component but runs just fine on lower equipped machines with just 1GB of RAM. Therefore, select last year's version by adding the branch *15.03*. Just add a ` -b 15.03` to the `git clone` command. More info [here](https://github.com/dtag-dev-sec/t-pot-autoinstall/tree/15.03).
