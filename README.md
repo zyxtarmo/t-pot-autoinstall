@@ -11,7 +11,7 @@ In case you have limited ressources, you can choose a "honeypot only"-mode durin
 
 So, clone the repository. Run as root. Enjoy.
 
-    git clone https://github.com/dtag-dev-sec/t-pot-autoinstall.git
+    git clone https://github.com/dtag-dev-sec/t-pot-autoinstall.git -b 15.03
     cd t-pot-autoinstall/
     sudo su
     ./install.sh
