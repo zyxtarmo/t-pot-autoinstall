@@ -125,7 +125,7 @@ echo "##########################################################"
 echo ""
 echo -n "Your choice: "
 read choice
-	if [[ "$choice" != [1-2] ]];
+	if [[ "$choice" != [1-4] ]];
 		then
     		fuECHO "### You typed $choice, which I don't recognize. It's either '1', '2', '3' or '4'. Script will abort!"
             exit 1
