@@ -216,7 +216,7 @@ EOF
 # getting t-pot git repo
 fuECHO "### Cloning T-Pot Repository."
 cwdir=$(pwd)
-git clone https://github.com/dtag-dev-sec/tpotce.git -b master
+git clone https://github.com/dtag-dev-sec/tpotce.git -b 16.03
 cp -R $cwdir/tpotce/installer/ $cwdir
 rm -rf $cwdir/tpotce/
 rm $cwdir/installer/install.sh $cwdir/installer/rc.local.install
