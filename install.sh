@@ -252,7 +252,7 @@ adduser --system --no-create-home --uid 2000 --disabled-password --disabled-logi
 
 # Let's set the hostname
 fuECHO "### Setting a new hostname."
-myHOST=$(curl ‐s ‐f www.nsanamegenerator.com | html2text | tr A‐Z a‐z | awk '{print $1}')
+myHOST=$(curl -s -f www.nsanamegenerator.com | html2text | tr A-Z a-z | awk '{print $1}')
 if [ "$myHOST" = "" ]; then
   fuECHO "### Failed to fetch name from remote, using local cache."
   myHOST=$(fuRANDOMWORD)
@@ -353,7 +353,7 @@ tee -a /etc/crontab <<EOF
 # Check if containers and services are up
 */5 * * * * 	root 	/usr/bin/check.sh
 
-# Example for alerta‐cli IP update
+# Example for alerta-cli IP update
 #*/5 * * * *	root	alerta --endpoint-url http://<ip>:<port>/api delete --filters resource=<host> && alerta --endpoint-url http://<ip>:<port>/api send -e IP -r <host> -E Production -s ok -S T-Pot -t \$(cat /data/elk/logstash/mylocal.ip) --status open
 
 # Check if updated images are available and download them
