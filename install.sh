@@ -105,6 +105,11 @@ if [ -f install.log ];
         exit 1
 fi
 
+# set locale
+locale-gen "en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
+
+
 # Let's log for the beauty of it
 set -e
 exec 2> >(tee "install.err")
