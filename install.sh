@@ -35,7 +35,7 @@ echo "
 # T-Pot 16.10 install script                             #
 # for Ubuntu server 16.04.0x, x64                        #
 ##########################################################
-Make sure the SSH login for your normal user is working!
+Make sure the key-based SSH login for your normal user is working!
 "
 
 # check for superuser
@@ -44,7 +44,7 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
-echo "Which user do you usually work with? This script is invoked by root, but what is your normal username?"
+echo "Which user do you usually work with?\nThis script is invoked by root, but what is your normal username?"
 echo -n "Enter username: "
 read myuser
 
@@ -71,7 +71,7 @@ fi
 # check for available, non-empty SSH key
 if ! fgrep -qs ssh /home/$myuser/.ssh/authorized_keys
     then
-        fuECHO "### No SSH keys for user '$myuser' found. Script will abort!"
+        fuECHO "### No SSH key for user '$myuser' found in /home/$myuser/.ssh/authorized_keys.\n ### Script will abort!"
         exit 1
 fi
 
@@ -86,7 +86,7 @@ fi
 # check if pubkey authentication is active
 if ! fgrep -q "PubkeyAuthentication yes" /etc/ssh/sshd_config
 	then
-		fuECHO "### Public Key Authentication is disabled /etc/ssh/sshd_config. Enable it by changing PubkeyAuthentication to 'yes'."
+		fuECHO "### Public Key Authentication is disabled /etc/ssh/sshd_config. \n ### Enable it by changing PubkeyAuthentication to 'yes'."
 		exit 1
 fi
 
