@@ -184,7 +184,7 @@ fuECHO "### Installing Updates."
 apt-get upgrade -y
 
 # Install packages needed
-apt-get install apt-transport-https ca-certificates curl dialog dstat ethtool genisoimage git htop libpam-google-authenticator lm-sensors ntp openssh-server syslinux pv vim apache2-utils apparmor nginx aufs-tools bash-completion build-essential  cgroupfs-mount docker.io glances html2text iptables iw libltdl7 man nginx-extras nodejs npm ntp openssl psmisc python-pip -y 
+apt-get install apt-transport-https ca-certificates curl dialog dnsutils dstat ethtool genisoimage git htop libpam-google-authenticator lm-sensors ntp openssh-server syslinux pv vim apache2-utils apparmor nginx aufs-tools bash-completion build-essential  cgroupfs-mount docker.io glances html2text iptables iw libltdl7 man nginx-extras nodejs npm ntp openssl psmisc python-pip -y 
 
 # Let's clean up apt
 apt-get autoclean -y
