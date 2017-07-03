@@ -3,7 +3,7 @@
 # T-Pot 16.10 install script                             #
 # Ubuntu server 16.04.0x, x64                            #
 #                                                        #
-# v1.0 by av, DTAG 2017-01-30                            #
+# v1.1 by av, DTAG 2017-07-03                            #
 #                                                        #
 # based on T-Pot 16.10 Community Edition Script          #
 # v16.10.0 by mo, DTAG, 2016-12-03                       #
@@ -21,7 +21,7 @@ tput setaf $myWHT
 
 # used for hostname
 fuRANDOMWORD () {
-  local myWORDFILE=/usr/share/dict/names
+  local myWORDFILE="$1"
   local myLINES=$(cat $myWORDFILE  | wc -l)
   local myRANDOM=$((RANDOM % $myLINES))
   local myNUM=$((myRANDOM * myRANDOM % $myLINES + 1))
@@ -44,7 +44,7 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
-echo "Which user do you usually work with?\nThis script is invoked by root, but what is your normal username?"
+echo -en "Which user do you usually work with?\nThis script is invoked by root, but what is your normal username\n?"
 echo -n "Enter username: "
 read myuser
 
@@ -250,15 +250,6 @@ fuECHO "### Adding new user."
 addgroup --gid 2000 tpot
 adduser --system --no-create-home --uid 2000 --disabled-password --disabled-login --gid 2000 tpot
 
-# Let's set the hostname
-fuECHO "### Setting a new hostname."
-myHOST=$(curl -s -f www.nsanamegenerator.com | html2text | tr A-Z a-z | awk '{print $1}')
-if [ "$myHOST" = "" ]; then
-  fuECHO "### Failed to fetch name from remote, using local cache."
-  myHOST=$(fuRANDOMWORD)
-fi
-hostnamectl set-hostname $myHOST
-sed -i 's#127.0.1.1.*#127.0.1.1\t'"$myHOST"'#g' /etc/hosts
 
 # Let's patch sshd_config
 fuECHO "### Patching sshd_config to listen on port 64295 and deny password authentication."
@@ -408,6 +399,15 @@ cp -R $cwdir/etc/nginx/ssl /etc/nginx/
 cp    $cwdir/etc/nginx/tpotweb.conf /etc/nginx/sites-available/
 cp    $cwdir/etc/nginx/nginx.conf /etc/nginx/nginx.conf
 cp    $cwdir/usr/share/nginx/html/* /usr/share/nginx/html/
+cp    $cwdir/usr/share/dict/* /usr/share/dict/
+
+# Let's set the hostname
+fuECHO "### Setting a new hostname."
+a=$(fuRANDOMWORD /usr/share/dict/a.txt)
+n=$(fuRANDOMWORD /usr/share/dict/n.txt)
+myHOST=$a$n
+hostnamectl set-hostname $myHOST
+sed -i 's#127.0.1.1.*#127.0.1.1\t'"$myHOST"'#g' /etc/hosts
 
 for i in $(cat /data/images.conf);
   do
