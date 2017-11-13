@@ -18,11 +18,11 @@ So, clone the repository. Run as root. Enjoy.
     
 If you run into problems during installation it might be related to your hoster's custom Ubuntu update repositories. So far, we do not have a solution for this. 
 
-Due to public demand, we added a non-interactive installation option. Just add the *username*, the *nuber referencing the edition* and the *password for web access* to the installation script, e.g.
+Due to public demand, we added a non-interactive installation option. Just add the *username*, the *number referencing the edition* and the *password for web access* to the installation script, e.g.
 
-		./install.sh ubuntu 2 myPassw0rd
+	./install.sh ubuntu 2 myPassw0rd
 		
-will install the Honeypot Only Edition (2) for the user "ubuntu" and set the web access password to "myPassw0rd". 
+will install the **Honeypot Only Edition** (2) for the user "ubuntu" and set the web access password to "myPassw0rd". 
 
 
 	
