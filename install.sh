@@ -281,7 +281,7 @@ if [ -z ${noninteractive+x} ]; then
 		fi
 	  done
 else 
-	myUSER=$myuser
+	myUSER=$myusergiven
 	myPass1=$mypasswordgiven
 fi
 htpasswd -b -c /etc/nginx/nginxpasswd $myUSER $myPASS1 
