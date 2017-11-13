@@ -282,7 +282,7 @@ if [ -z ${noninteractive+x} ]; then
 	  done
 else 
 	myUSER=$myusergiven
-	myPass1=$mypasswordgiven
+	myPASS1=$mypasswordgiven
 fi
 htpasswd -b -c /etc/nginx/nginxpasswd $myUSER $myPASS1 
 fuECHO
