@@ -342,6 +342,7 @@ sed -i 's#\#PasswordAuthentication yes#PasswordAuthentication no#' /etc/ssh/sshd
 # Let's allow ssh password authentication from RFC1918 networks
 fuECHO "### Allow SSH password authentication from RFC1918 networks"
 tee -a /etc/ssh/sshd_config <<EOF
+
 Match address 127.0.0.1,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
     PasswordAuthentication yes
 EOF
