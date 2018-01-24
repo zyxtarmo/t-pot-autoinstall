@@ -1,0 +1,6 @@
+---
+
+  sshk: ~/.ssh/id_rsa.pub
+  sshp: 64296
+  geo_cty: /opt/geoip/GeoLiteCity.dat
+  geo_asn: /opt/geoip/GeoIPASNum.dat

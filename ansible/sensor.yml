@@ -1,0 +1,29 @@
+--- sensor playbook
+
+- name: common
+  vars:
+    - is_custom: 1
+  hosts:
+    - sensor
+    - server
+  roles:
+    - prepare
+
+
+- name: server
+  vars:
+    - is_custom: 1
+  hosts:
+    - server
+  roles:
+    - elk
+    - autossh
+
+
+- name: sensor
+  vars:
+    - is_custom: 1
+  hosts:
+    - sensor
+  roles:
+    - logstash

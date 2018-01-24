@@ -69,6 +69,9 @@ if [ "$#" -ne 3 -a  "$#" -gt 0 ]; then
 	echo "# 4 - T-Pot's FULL INSTALLATION                          #"
 	echo "#     Everything                                         #"
 	echo "#                                                        #"
+	echo "# 5 - T-Pot's MINIMAL INSTALLATION                       #"
+	echo "#     Minimal                                            #"
+	echo "#                                                        #"
 	echo "##########################################################"
 	echo ""
     echo "## EXITING"
@@ -196,6 +199,9 @@ if [ -z ${noninteractive+x} ]; then
 	echo "# 4 - T-Pot's FULL INSTALLATION                          #"
 	echo "#     Everything                                         #"
 	echo "#                                                        #"
+	echo "# 5 - T-Pot's MINIMAL INSTALLATION                       #"
+	echo "#     Minimal                                            #"
+	echo "#                                                        #"
 	echo "##########################################################"
 	echo ""
 	echo -n "Your choice: "
@@ -205,7 +211,7 @@ else
 fi
 
 
-if [[ "$choice" != [1-4] ]];
+if [[ "$choice" != [1-5] ]];
 	then
 		fuECHO "### You typed $choice, which I don't recognize. It's either '1', '2', '3' or '4'. Script will abort!"
 		exit 1
@@ -227,9 +233,12 @@ case $choice in
 	echo "You chose to install T-Pot's FULL INSTALLATION. Bring it on..."
 	mode="ALL"
 	;;
-
+5)
+	echo "You chose to install T-Pot's MINIMAL INSTALLATION. Bring it on..."
+	mode="MIN"
+	;;
 *)
-	fuECHO "### You typed $choice, which I don't recognize. It's either '1', '2', '3' or '4'. Script will abort!"
+	fuECHO "### You typed $choice, which I don't recognize. It's either '1', '2', '3', '4' or '5'. Script will abort!"
 	exit 1
 	;;
 esac
@@ -317,8 +326,8 @@ fuECHO "### Installing ctop."
 wget https://github.com/bcicen/ctop/releases/download/v0.6.1/ctop-0.6.1-linux-amd64 -O ctop 
 mv ctop /usr/bin/
 chmod +x /usr/bin/ctop
-fuECHO "### Cloning T-Pot."
-git clone https://github.com/dtag-dev-sec/tpotce /opt/tpot
+fuECHO "### Cloning alternative version of T-Pot."
+git clone https://github.com/zyxtarmo/tpotce /opt/tpot
 
 # Let's add a new user
 fuECHO "### Adding new user."
@@ -368,6 +377,10 @@ case $mode in
     echo "### Preparing EVERYTHING flavor installation."
     cp /opt/tpot/etc/compose/all.yml $myTPOTCOMPOSE
   ;;
+  MIN)
+    echo "### Preparing MNIMAL flavor installation."
+    cp /opt/tpot/etc/compose/min.yml $myTPOTCOMPOSE
+  ;;
 esac
 
 
@@ -413,9 +426,9 @@ tee -a /etc/crontab <<EOF
 # Uploaded binaries are not supposed to be downloaded
 */1 * * * *     root    mv --backup=numbered /data/dionaea/roots/ftp/* /data/dionaea/binaries/
 # Daily reboot
-27 3 * * *      root    reboot
+# 27 3 * * *      root    reboot
 # Check for updated packages every sunday, upgrade and reboot
-27 16 * * 0     root    apt-get autoclean -y && apt-get autoremove -y && apt-get update -y && apt-get upgrade -y && sleep 10 && reboot
+# 27 16 * * 0     root    apt-get autoclean -y && apt-get autoremove -y && apt-get update -y && apt-get upgrade -y && sleep 10 && reboot
 EOF
 
 # Let's create some files and folders
