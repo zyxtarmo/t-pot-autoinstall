@@ -72,6 +72,9 @@ if [ "$#" -ne 3 -a  "$#" -gt 0 ]; then
 	echo "# 5 - T-Pot's MINIMAL INSTALLATION                       #"
 	echo "#     Minimal                                            #"
 	echo "#                                                        #"
+	echo "# 6 - T-Pot's REMOTE SENSOR INSTALLATION                 #"
+	echo "#     Remote Sensor                                      #"
+	echo "#                                                        #"
 	echo "##########################################################"
 	echo ""
     echo "## EXITING"
@@ -202,6 +205,9 @@ if [ -z ${noninteractive+x} ]; then
 	echo "# 5 - T-Pot's MINIMAL INSTALLATION                       #"
 	echo "#     Minimal                                            #"
 	echo "#                                                        #"
+	echo "# 6 - T-Pot's REMOTE SENSOR INSTALLATION                 #"
+	echo "#     Remote Sensor                                      #"
+	echo "#                                                        #"
 	echo "##########################################################"
 	echo ""
 	echo -n "Your choice: "
@@ -236,6 +242,10 @@ case $choice in
 5)
 	echo "You chose to install T-Pot's MINIMAL INSTALLATION. Bring it on..."
 	mode="MIN"
+	;;
+6)
+	echo "You chose to install T-Pot's REMOTE SENSOR INSTALLATION. Bring it on..."
+	mode="RSENS"
 	;;
 *)
 	fuECHO "### You typed $choice, which I don't recognize. It's either '1', '2', '3', '4' or '5'. Script will abort!"
@@ -381,6 +391,10 @@ case $mode in
     echo "### Preparing MNIMAL flavor installation."
     cp /opt/tpot/etc/compose/min.yml $myTPOTCOMPOSE
   ;;
+  RSENS)
+    echo "### Preparing MNIMAL flavor installation."
+    cp /opt/tpot/etc/compose/sensor.yml $myTPOTCOMPOSE
+  ;;
 esac
 
 
@@ -421,8 +435,8 @@ fuECHO "### Adding cronjobs."
 tee -a /etc/crontab <<EOF
 # Check if updated images are available and download them
 27 1 * * *      root    docker-compose -f /opt/tpot/etc/tpot.yml pull
-# Delete elasticsearch logstash indices older than 90 days
-27 4 * * *      root    curator --config /opt/tpot/etc/curator/curator.yml /opt/tpot/etc/curator/actions.yml
+# Delete elasticsearch logstash indices older than 90 days (enable this for central)
+# 27 4 * * *      root    curator --config /opt/tpot/etc/curator/curator.yml /opt/tpot/etc/curator/actions.yml
 # Uploaded binaries are not supposed to be downloaded
 */1 * * * *     root    mv --backup=numbered /data/dionaea/roots/ftp/* /data/dionaea/binaries/
 # Daily reboot
@@ -457,7 +471,7 @@ cp -R /opt/tpot/host/etc/nginx/ssl /etc/nginx/
 cp    /opt/tpot/host/etc/nginx/tpotweb.conf /etc/nginx/sites-available/
 cp    /opt/tpot/host/etc/nginx/nginx.conf /etc/nginx/nginx.conf 
 cp    /opt/tpot/host/usr/share/nginx/html/* /usr/share/nginx/html/ 
-systemctl enable tpot 
+systemctl enable tpot
 systemctl enable wetty
 
 # patch wetty config
@@ -501,6 +515,23 @@ EOF
 # Let's create ews.ip before reboot and prevent race condition for first start
 /opt/tpot/bin/updateip.sh
 
+# Mode specific final steps
+case $mode in
+  RSENS)
+    echo "### Finalizing REMOTE SENSOR flavor installation."
+    systemctl disable nginx
+    systemctl disable wetty
+    apt-get install openjdk-8-jre-headless
+    apt-get install apt-transport-https
+    wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+    echo "deb https://artifacts.elastic.co/packages/6.x/apt stable main" | tee -a /etc/apt/sources.list.d/elastic-6.x.list
+    apt-get update
+    apt-get install logstash
+    cp /opt/tpot/etc/objects/logstash.conf /etc/logstash/conf.d/
+    systemctl enable logstash
+    systemctl start logstash
+  ;;
+esac
 
 # Final steps
 fuECHO "### Thanks for your patience. Now rebooting. Remember to login on SSH port 64295 next time or visit the dashboard on port 64297!"
