@@ -1,0 +1,316 @@
+---
+
+  - name: docker - apt-key
+    apt_key:
+      keyserver: p80.pool.sks-keyservers.net
+      id: 58118E89F3A912897C070ADBF76221572C52609D
+      state: present
+
+  - name: docker - sources.list
+    lineinfile:
+      dest: /etc/apt/sources.list.d/docker.list
+      line: "deb https://apt.dockerproject.org/repo ubuntu-xenial main"
+      create: yes
+      state: present
+
+  - name: docker - install
+    apt:
+      update_cache: yes
+      name: "{{item}}"
+      state: latest
+    with_items:
+     - docker-engine
+     - apt-transport-https 
+     - ca-certificates 
+     - curl 
+     - dialog 
+     - dnsutils 
+     - dstat 
+     - ethtool 
+     - genisoimage 
+     - git 
+     - htop 
+     - libpam-google-authenticator 
+     - lm-sensors 
+     - ntp 
+     - openssh-server 
+     - syslinux 
+     - pv 
+     - vim 
+     - apache2-utils 
+     - apparmor 
+     - nginx 
+     - aufs-tools 
+     - bash-completion 
+     - build-essential  
+     - cgroupfs-mount 
+     - glances 
+     - html2text 
+     - iptables 
+     - iw 
+     - libltdl7 
+     - man 
+     - nginx-extras 
+     - nodejs 
+     - npm 
+     - ntp 
+     - openssl 
+     - psmisc 
+     - python-pip
+
+  - name: ssh port change
+    replace:
+      dest: /etc/ssh/sshd_config
+      regexp: "Port 22"
+      replace: "Port {{sshp}}"
+
+  - name: docker - run as service
+    lineinfile:
+      dest: /etc/default/docker
+      line: "DOCKER_OPTS='-r=false'"
+      create: yes
+      state: present
+
+  - name: create tpot group
+    group:
+      name: tpot
+      gid: 2000
+      state: present
+
+  - name: create tpot user
+    user:
+      name: tpot
+      system: yes
+      createhome: no
+      uid: 2000
+      group: tpot
+      shell: /bin/false
+      state: present
+
+  - name: create /data
+    file:
+      dest: /data
+      state: directory
+      owner: root
+      mode: 0600
+
+  - name: disable persistence
+    file:
+      path: /data/persistence.off
+      state: touch
+
+  - name: clone T-Pot repository
+    git:
+      repo: https://github.com/dtag-dev-sec/tpotce.git
+      version: master
+      depth: 1
+      force: yes
+      dest: /tmp/tpotce
+
+  - name: remove installer files
+    file:
+      path: "/tmp/tpotce/installer/{{item}}"
+      state: absent
+    with_items:
+    - install.sh
+    - rc.local.install
+
+  - name: install alerta
+    pip:
+      name: "{{item}}"
+      state: latest
+    with_items:
+    - alerta
+
+  - name: install wetty
+    shell: "{{item}}"
+    with_items:
+     - "ln -nsf /usr/bin/nodejs /usr/bin/node"
+     - "npm install https://github.com/t3chn0m4g3/wetty -g"
+
+  # central.yml - include additional honeypots
+  - name: custom flavor
+    copy:
+      src: custom.conf
+      dest: /data/images.conf
+    when: is_custom is defined
+
+  - name: custom enabled
+    copy:
+      src: enabled.conf
+      dest: /data/enabled.conf
+    when: is_custom is defined
+
+  - name: has existing /data/images.conf
+    stat:
+      path: /data/images.conf
+    register: images_conf
+
+  - name: select flavor (standard)
+    command: cp /tmp/tpotce/installer/data/imgcfg/tpot_images.conf /data/images.conf
+    when: not images_conf.stat.exists and tpot_img.lower() == "standard"
+
+  - name: select flavor (honeypots)
+    command: cp /tmp/tpotce/installer/data/imgcfg/hp_images.conf /data/images.conf
+    when: not images_conf.stat.exists and tpot_img.lower() == "honeypot"
+
+  - name: select flavor (industrial)
+    command: cp /tmp/tpotce/installer/data/imgcfg/industrial_images.conf /data/images.conf
+    when: not images_conf.stat.exists and tpot_img.lower() == "industrial"
+
+  - name: select flavor (full)
+    command: cp /tmp/tpotce/installer/data/imgcfg/all_images.conf /data/images.conf
+    when: not images_conf.stat.exists and tpot_img.lower() == "full"
+
+  - name: check tpot cached images
+    stat:
+      path: /root/tpot/images
+    register: cache_img
+
+  - name: docker - load old images
+    shell: "for i in $(cat /data/images.conf);do docker load -i /root/tpot/images/$i:{{tpot_tag}}.img;done"
+    when: cache_img.stat.exists
+
+  - name: docker - pull new images
+    shell: "for i in $(cat /data/images.conf);do docker pull dtagdevsec/$i:{{tpot_tag}};done"
+    when: not cache_img.stat.exists
+
+  - name: create directories
+    file:
+      path: "{{item}}"
+      recurse: yes
+      state: directory
+    with_items:
+    - /data/conpot/log
+    - /data/cowrie/log/tty
+    - /data/cowrie/downloads
+    - /data/cowrie/keys
+    - /data/cowrie/misc
+    - /data/dionaea/log
+    - /data/dionaea/bitstreams
+    - /data/dionaea/binaries
+    - /data/dionaea/rtp
+    - /data/dionaea/wwwroot
+    - /data/elasticpot/log
+    - /data/elk/data
+    - /data/elk/log
+    - /data/glastopf
+    - /data/honeytrap/log
+    - /data/honeytrap/attacks
+    - /data/honeytrap/downloads
+    - /data/emobility/log
+    - /data/ews/log
+    - /data/ews/conf
+    - /data/ews/dionaea
+    - /data/ews/emobility
+    - /data/suricata/log
+
+  - name: update /etc/issue
+    lineinfile:
+      dest: /tmp/tpotce/installer/etc/issue
+      line: "Container status is written to ~/docker-status"
+      state: present
+
+  - name: file permissions
+    shell: "{{item}}"
+    with_items:
+    - "chmod 500 /tmp/tpotce/installer/bin/*"
+    - "chmod 600 /tmp/tpotce/installer/data/*"
+    - "chmod 644 /tmp/tpotce/installer/etc/issue"
+    - "chmod 755 /tmp/tpotce/installer/etc/rc.local"
+    - "chmod 644 /tmp/tpotce/installer/data/systemd/*"
+
+  - name: copy files
+    shell: "{{item}}"
+    with_items:
+    - "tar xvfz /tmp/tpotce/installer/data/elkbase.tgz -C /"
+    - "cp /tmp/tpotce/installer/data/elkbase.tgz /data/"
+    - "cp -R /tmp/tpotce/installer/bin/* /usr/bin/"
+    - "cp -R /tmp/tpotce/installer/data/* /data/"
+    - "cp    /tmp/tpotce/installer/data/systemd/* /etc/systemd/system/"
+    - "cp    /tmp/tpotce/installer/etc/issue /etc/"
+    - "cp -R /tmp/tpotce/installer/etc/nginx/ssl /etc/nginx/"
+    - "cp    /tmp/tpotce/installer/etc/nginx/tpotweb.conf /etc/nginx/sites-available/"
+    - "cp    /tmp/tpotce/installer/etc/nginx/nginx.conf /etc/nginx/nginx.conf"
+    - "cp    /tmp/tpotce/installer/usr/share/nginx/html/* /usr/share/nginx/html/"
+    - "cp    /tmp/tpotce/installer/usr/share/dict/* /usr/share/dict/"
+
+  - name: /data permissions
+    file:
+      path: /data
+      owner: tpot
+      mode: 0760
+      recurse: yes
+
+  - name: /home permissions
+    file:
+      path: "{{home}}"
+      owner: "{{user}}"
+
+  - name: ews.ip template
+    template:
+      src: ews_ip.j2
+      dest: /data/ews/conf/ews.ip
+
+  - name: disable ews
+    replace:
+      dest: /data/ews/conf/ews.cfg
+      regexp: '^(ews =) .*$'
+      replace: '\1 false'
+    when: ews_off is defined
+
+  - name: cleanup
+    file:
+      path: /tmp/tpotce
+      state: absent
+
+  - name: systemd custom enable + wetty
+    shell: "{{item}}"
+    with_items:
+     - "systemctl daemon-reload"
+     - "for i in $(cat /data/enabled.conf); do systemctl enable $i; done"
+     - "systemctl enable wetty"
+     - "cp  -u  /data/elk/logstash/conf.d/* /etc/logstash/conf.d/"
+
+  - name: logstash....conf permissions
+    file:
+      path: /etc/logstash/conf.d
+      owner: "{{user}}"
+      recurse: yes
+
+  - name: logstash - start
+    service:
+      name: logstash
+      state: restarted
+      enabled: yes
+
+  - name: set up cron
+    blockinfile: 
+     path: "/etc/crontab"
+     create: yes
+     block: |
+       # Determine running containers every 120s
+       */2 * * * *     root    /usr/bin/status.sh > /home/"{{user}}"/docker-status
+       # Check if containers and services are up
+       */5 * * * *     root    /usr/bin/check.sh
+       # Example for alerta-cli IP update
+       #*/5 * * * *    root    alerta --endpoint-url http://<ip>:<port>/api delete --filters resource=<host> && alerta --endpoint-url http://<ip>:<port>/api send -e IP -r <host> -E Production -s ok -S T-Pot -t \$(cat /data/elk/logstash/mylocal.ip) --status open
+       # Check if updated images are available and download them
+       27 1 * * *      root    for i in \$(cat /data/images.conf); do /usr/bin/docker pull dtagdevsec/\$i:latest1610; done
+       # Restart docker service and containers
+       27 3 * * *      root    /usr/bin/dcres.sh
+       # Delete elastic indices older than 90 days
+       27 4 * * *  root  /usr/bin/docker exec elk bash -c '/usr/local/bin/curator --host 127.0.0.1 delete indices --older-than 90 --time-unit days --timestring '%Y.%m.%d''
+       # Update IP and erase check.lock if it exists
+       27 15 * * * root /etc/rc.local
+       # Daily reboot - commented out @20171005
+       # 27 23 * * *     root    reboot
+       # Check for updated packages every sunday, upgrade and reboot
+       27 16 * * 0   root  apt-get autoclean -y; apt-get autoremove -y; apt-get update -y; apt-get upgrade -y; sleep 10; reboot
+
+  - name: reload cron
+    service:
+      name: cron 
+      state: restarted
+      enabled: yes
+

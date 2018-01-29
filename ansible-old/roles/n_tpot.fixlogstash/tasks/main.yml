@@ -1,0 +1,19 @@
+---
+
+  - name: cp logstash conf 
+    shell: "{{item}}"
+    with_items:
+     - "cp  -u  /data/elk/logstash/conf.d/* /etc/logstash/conf.d/"
+
+  - name: logstash....conf permissions
+    file:
+      path: /etc/logstash/conf.d
+      owner: "{{user}}"
+      recurse: yes
+
+  - name: logstash - start
+    service:
+      name: logstash
+      state: restarted
+      enabled: yes
+

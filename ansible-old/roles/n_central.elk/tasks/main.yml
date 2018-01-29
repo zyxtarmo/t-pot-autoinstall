@@ -1,0 +1,62 @@
+---
+
+  - name: install packages
+    apt:
+      name: "{{item}}"
+      state: latest
+    with_items:
+    - autossh
+
+  - name: copy tunnel key (tun.key)
+    copy:
+      src: "{{playbook_dir}}/resources/tun.key"
+      dest: "/root/tun.key"
+      mode: 0400
+
+  - name: ssh config - ipv4
+    lineinfile:
+      dest: /etc/ssh/ssh_config
+      line: "{{item}}"
+      state: present
+    with_items:
+    - "AddressFamily inet"
+    - "GlobalKnownHostsFile /etc/ssh/ssh_known_hosts"
+
+  - name: ssh known_hosts keys
+    template:
+      src: known_hosts.j2
+      dest: /etc/ssh/ssh_known_hosts
+
+  - name: ssh tunnels - systemd
+    copy:
+      src: sshtun.service
+      dest: /lib/systemd/system/sshtun.service
+    register: sshtun
+
+  - name: systemctl daemon
+    command: systemctl daemon-reload
+    when: sshtun.changed
+
+  - name: ssh tunnels - sshtun.sh
+    template:
+      src: sshtun_sh.j2
+      dest: /root/sshtun.sh
+      mode: 0700
+      owner: root
+
+  - name: logstash.conf path
+    file:
+      path: /data/elk/logstash/conf.d
+      state: directory
+
+  - name: load logstash.conf
+    template:
+      src: logstash.j2
+      dest: /data/elk/logstash/conf.d/logstash.conf
+
+  - name: sshtun - restart
+    service:
+      name: sshtun
+      state: restarted
+      enabled: yes
+

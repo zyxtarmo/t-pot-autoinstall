@@ -521,12 +521,15 @@ case $mode in
     echo "### Finalizing REMOTE SENSOR flavor installation."
     systemctl disable nginx
     systemctl disable wetty
-    apt-get install openjdk-8-jre-headless
-    apt-get install apt-transport-https
+    apt-get install -y openjdk-8-jre-headless
+    apt-get install -y apt-transport-https
     wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
     echo "deb https://artifacts.elastic.co/packages/6.x/apt stable main" | tee -a /etc/apt/sources.list.d/elastic-6.x.list
+    mkdir -p /opt/geoip
+    curl http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz | gunzip | tee /opt/geoip/GeoLiteCity.dat
+    curl http://download.maxmind.com/download/geoip/database/asnum/GeoIPASNum.dat.gz | gunzip | tee /opt/geoip/GeoIPASNum.dat
     apt-get update
-    apt-get install logstash
+    apt-get install -y logstash
     cp /opt/tpot/etc/objects/logstash.conf /etc/logstash/conf.d/
     systemctl enable logstash
     systemctl start logstash

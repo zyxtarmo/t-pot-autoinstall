@@ -1,0 +1,12 @@
+---
+# central.yml - modified tpot hp setup
+#   configure multiple honeypots to be deployed and
+#   aggregate log data into a centralized elk server
+
+  - name: central.sensors
+    vars:
+    - is_custom: 1
+    hosts:
+    - sensor
+    roles:
+    - os.reboot
