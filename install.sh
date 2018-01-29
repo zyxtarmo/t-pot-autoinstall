@@ -217,7 +217,7 @@ else
 fi
 
 
-if [[ "$choice" != [1-5] ]];
+if [[ "$choice" != [1-6] ]];
 	then
 		fuECHO "### You typed $choice, which I don't recognize. It's either '1', '2', '3' or '4'. Script will abort!"
 		exit 1
