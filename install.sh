@@ -45,38 +45,38 @@ Make sure the key-based SSH login for your normal user is working!
 
 # ADD ARGS for automated setup
 if [ "$#" -ne 3 -a  "$#" -gt 0 ]; then    
-	echo "## Please add the following three arguments for a one shot install:"
+    echo "## Please add the following three arguments for a one shot install:"
     echo "         Username, which edition to install (number), a webpassword"
     echo "## invoke: $0 myusername <1|2|3|4> myWebPassw0rd"
     echo ""
     echo "## Editions to choose from: "
     echo "##########################################################"
-	echo "#                                                        #"
-	echo "#     How do you want to proceed? Enter your choice.     #"
-	echo "#                                                        #"
-	echo "#     Required: 4GB RAM, 64GB disk                       #"
-	echo "#     Recommended: 8GB RAM, 128GB SSD                    #"
-	echo "#                                                        #"
-	echo "# 1 - T-Pot's STANDARD INSTALLATION                      #"
-	echo "#     Standard Honeypots, Suricata & ELK                 #"
-	echo "#                                                        #"
-	echo "# 2 - T-Pot's HONEYPOTS ONLY                             #"
-	echo "#     Honeypots only, w/o Suricata & ELK                 #"
-	echo "#                                                        #"
-	echo "# 3 - T-Pot's INDUSTRIAL EDITION                         #"
-	echo "#     Conpot, eMobility, Suricata & ELK                  #"
-	echo "#                                                        #"
-	echo "# 4 - T-Pot's FULL INSTALLATION                          #"
-	echo "#     Everything                                         #"
-	echo "#                                                        #"
-	echo "# 5 - T-Pot's MINIMAL INSTALLATION                       #"
-	echo "#     Minimal                                            #"
-	echo "#                                                        #"
-	echo "# 6 - T-Pot's REMOTE SENSOR INSTALLATION                 #"
-	echo "#     Remote Sensor                                      #"
-	echo "#                                                        #"
-	echo "##########################################################"
-	echo ""
+    echo "#                                                        #"
+    echo "#     How do you want to proceed? Enter your choice.     #"
+    echo "#                                                        #"
+    echo "#     Required: 4GB RAM, 64GB disk                       #"
+    echo "#     Recommended: 8GB RAM, 128GB SSD                    #"
+    echo "#                                                        #"
+    echo "# 1 - T-Pot's STANDARD INSTALLATION                      #"
+    echo "#     Standard Honeypots, Suricata & ELK                 #"
+    echo "#                                                        #"
+    echo "# 2 - T-Pot's HONEYPOTS ONLY                             #"
+    echo "#     Honeypots only, w/o Suricata & ELK                 #"
+    echo "#                                                        #"
+    echo "# 3 - T-Pot's INDUSTRIAL EDITION                         #"
+    echo "#     Conpot, eMobility, Suricata & ELK                  #"
+    echo "#                                                        #"
+    echo "# 4 - T-Pot's FULL INSTALLATION                          #"
+    echo "#     Everything                                         #"
+    echo "#                                                        #"
+    echo "# 5 - T-Pot's MINIMAL INSTALLATION                       #"
+    echo "#     Minimal                                            #"
+    echo "#                                                        #"
+    echo "# 6 - T-Pot's REMOTE SENSOR INSTALLATION                 #"
+    echo "#     Remote Sensor                                      #"
+    echo "#                                                        #"
+    echo "##########################################################"
+    echo ""
     echo "## EXITING"
     exit 1
 fi
@@ -101,11 +101,11 @@ fi
 
 
 if [ -z ${noninteractive+x} ]; then
-	echo -en "Which user do you usually work with?\nThis script is invoked by root, but what is your normal username?\n"
-	echo -n "Enter username: "
-	read myuser
+    echo -en "Which user do you usually work with?\nThis script is invoked by root, but what is your normal username?\n"
+    echo -n "Enter username: "
+    read myuser
 else
-	myuser=$myusergiven
+    myuser=$myusergiven
 fi 
 
 
@@ -115,8 +115,8 @@ echo "Checking prerequisites..."
 
 # check if user exists
 if ! grep -q $myuser /etc/passwd
-	then
-		fuECHO "### User '$myuser' not found. Script will abort!"
+    then
+        fuECHO "### User '$myuser' not found. Script will abort!"
         exit 1
 fi
 
@@ -124,9 +124,9 @@ fi
 # check if ssh daemon is running
 sshstatus=$(service ssh status)
 if [[ ! $sshstatus =~ "active (running)" ]];
-	then
-		echo "### SSH is not running. Script will abort!"
-		exit 1
+    then
+        echo "### SSH is not running. Script will abort!"
+        exit 1
 fi
 
 # check for available, non-empty SSH key
@@ -146,9 +146,9 @@ fi
 
 # check if pubkey authentication is active
 if ! fgrep -q "PubkeyAuthentication yes" /etc/ssh/sshd_config
-	then
-		fuECHO "### Public Key Authentication is disabled /etc/ssh/sshd_config. \n ### Enable it by changing PubkeyAuthentication to 'yes'."
-		exit 1
+    then
+        fuECHO "### Public Key Authentication is disabled /etc/ssh/sshd_config. \n ### Enable it by changing PubkeyAuthentication to 'yes'."
+        exit 1
 fi
 
 # check for ubuntu 16.04. distribution
@@ -183,74 +183,74 @@ clear
 
 
 if [ -z ${noninteractive+x} ]; then
-	echo "##########################################################"
-	echo "#                                                        #"
-	echo "#     How do you want to proceed? Enter your choice.     #"
-	echo "#                                                        #"
-	echo "#     Required: 4GB RAM, 64GB disk                       #"
-	echo "#     Recommended: 8GB RAM, 128GB SSD                    #"
-	echo "#                                                        #"
-	echo "# 1 - T-Pot's STANDARD INSTALLATION                      #"
-	echo "#     Standard Honeypots, Suricata & ELK                 #"
-	echo "#                                                        #"
-	echo "# 2 - T-Pot's HONEYPOTS ONLY                             #"
-	echo "#     Honeypots only, w/o Suricata & ELK                 #"
-	echo "#                                                        #"
-	echo "# 3 - T-Pot's INDUSTRIAL EDITION                         #"
-	echo "#     Conpot, eMobility, Suricata & ELK                  #"
-	echo "#                                                        #"
-	echo "# 4 - T-Pot's FULL INSTALLATION                          #"
-	echo "#     Everything                                         #"
-	echo "#                                                        #"
-	echo "# 5 - T-Pot's MINIMAL INSTALLATION                       #"
-	echo "#     Minimal                                            #"
-	echo "#                                                        #"
-	echo "# 6 - T-Pot's REMOTE SENSOR INSTALLATION                 #"
-	echo "#     Remote Sensor                                      #"
-	echo "#                                                        #"
-	echo "##########################################################"
-	echo ""
-	echo -n "Your choice: "
-	read choice
+    echo "##########################################################"
+    echo "#                                                        #"
+    echo "#     How do you want to proceed? Enter your choice.     #"
+    echo "#                                                        #"
+    echo "#     Required: 4GB RAM, 64GB disk                       #"
+    echo "#     Recommended: 8GB RAM, 128GB SSD                    #"
+    echo "#                                                        #"
+    echo "# 1 - T-Pot's STANDARD INSTALLATION                      #"
+    echo "#     Standard Honeypots, Suricata & ELK                 #"
+    echo "#                                                        #"
+    echo "# 2 - T-Pot's HONEYPOTS ONLY                             #"
+    echo "#     Honeypots only, w/o Suricata & ELK                 #"
+    echo "#                                                        #"
+    echo "# 3 - T-Pot's INDUSTRIAL EDITION                         #"
+    echo "#     Conpot, eMobility, Suricata & ELK                  #"
+    echo "#                                                        #"
+    echo "# 4 - T-Pot's FULL INSTALLATION                          #"
+    echo "#     Everything                                         #"
+    echo "#                                                        #"
+    echo "# 5 - T-Pot's MINIMAL INSTALLATION                       #"
+    echo "#     Minimal                                            #"
+    echo "#                                                        #"
+    echo "# 6 - T-Pot's REMOTE SENSOR INSTALLATION                 #"
+    echo "#     Remote Sensor                                      #"
+    echo "#                                                        #"
+    echo "##########################################################"
+    echo ""
+    echo -n "Your choice: "
+    read choice
 else 
-	choice=$myeditiongiven
+    choice=$myeditiongiven
 fi
 
 
 if [[ "$choice" != [1-6] ]];
-	then
-		fuECHO "### You typed $choice, which I don't recognize. It's either '1', '2', '3' or '4'. Script will abort!"
-		exit 1
+    then
+        fuECHO "### You typed $choice, which I don't recognize. It's either '1', '2', '3' or '4'. Script will abort!"
+        exit 1
 fi
 case $choice in
 1)
-	echo "You chose T-Pot's STANDARD INSTALLATION. The best default ever!"
-	mode="TPOT"
-	;;
+    echo "You chose T-Pot's STANDARD INSTALLATION. The best default ever!"
+    mode="TPOT"
+    ;;
 2)
-	echo "You chose to install T-Pot's HONEYPOTS ONLY. Ack."
-	mode="HP"
-	;;
+    echo "You chose to install T-Pot's HONEYPOTS ONLY. Ack."
+    mode="HP"
+    ;;
 3)
-	echo "You chose T-Pot's INDUSTRIAL EDITION. ICS is the new IOT."
-	mode="INDUSTRIAL"
-	;;
+    echo "You chose T-Pot's INDUSTRIAL EDITION. ICS is the new IOT."
+    mode="INDUSTRIAL"
+    ;;
 4)
-	echo "You chose to install T-Pot's FULL INSTALLATION. Bring it on..."
-	mode="ALL"
-	;;
+    echo "You chose to install T-Pot's FULL INSTALLATION. Bring it on..."
+    mode="ALL"
+    ;;
 5)
-	echo "You chose to install T-Pot's MINIMAL INSTALLATION. Bring it on..."
-	mode="MIN"
-	;;
+    echo "You chose to install T-Pot's MINIMAL INSTALLATION. Bring it on..."
+    mode="MIN"
+    ;;
 6)
-	echo "You chose to install T-Pot's REMOTE SENSOR INSTALLATION. Bring it on..."
-	mode="RSENS"
-	;;
+    echo "You chose to install T-Pot's REMOTE SENSOR INSTALLATION. Bring it on..."
+    mode="RSENS"
+    ;;
 *)
-	fuECHO "### You typed $choice, which I don't recognize. It's either '1', '2', '3', '4' or '5'. Script will abort!"
-	exit 1
-	;;
+    fuECHO "### You typed $choice, which I don't recognize. It's either '1', '2', '3', '4' or '5'. Script will abort!"
+    exit 1
+    ;;
 esac
 
 
@@ -277,31 +277,31 @@ fuECHO "### Removing NGINX default website."
 [ -e /usr/share/nginx/html/index.html ] && rm /usr/share/nginx/html/index.html  
 
 if [ -z ${noninteractive+x} ]; then
-	# Let's ask user for a password for the web user
-	myOK="n"
-	myUSER=$myuser
-	fuECHO "### Please enter a password for your user $myuser for web access."
-	myPASS1="pass1"
-	myPASS2="pass2"
-	while [ "$myPASS1" != "$myPASS2"  ] 
-	  do
-		while [ "$myPASS1" == "pass1"  ] || [ "$myPASS1" == "" ]
-		  do
-			read -s -p "Password: " myPASS1
-			fuECHO
-		  done
-		read -s -p "Repeat password: " myPASS2
-		fuECHO
-		if [ "$myPASS1" != "$myPASS2" ];
-		  then
-			fuECHO "### Passwords do not match."
-			myPASS1="pass1"
-			myPASS2="pass2"
-		fi
-	  done
+    # Let's ask user for a password for the web user
+    myOK="n"
+    myUSER=$myuser
+    fuECHO "### Please enter a password for your user $myuser for web access."
+    myPASS1="pass1"
+    myPASS2="pass2"
+    while [ "$myPASS1" != "$myPASS2"  ] 
+      do
+        while [ "$myPASS1" == "pass1"  ] || [ "$myPASS1" == "" ]
+          do
+            read -s -p "Password: " myPASS1
+            fuECHO
+          done
+        read -s -p "Repeat password: " myPASS2
+        fuECHO
+        if [ "$myPASS1" != "$myPASS2" ];
+          then
+            fuECHO "### Passwords do not match."
+            myPASS1="pass1"
+            myPASS2="pass2"
+        fi
+      done
 else 
-	myUSER=$myusergiven
-	myPASS1=$mypasswordgiven
+    myUSER=$myusergiven
+    myPASS1=$mypasswordgiven
 fi
 htpasswd -b -c /etc/nginx/nginxpasswd $myUSER $myPASS1 
 fuECHO
@@ -526,8 +526,13 @@ case $mode in
     wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
     echo "deb https://artifacts.elastic.co/packages/6.x/apt stable main" | tee -a /etc/apt/sources.list.d/elastic-6.x.list
     mkdir -p /opt/geoip
-    curl http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz | gunzip | tee /opt/geoip/GeoLiteCity.dat
-    curl http://download.maxmind.com/download/geoip/database/asnum/GeoIPASNum.dat.gz | gunzip | tee /opt/geoip/GeoIPASNum.dat
+    cd /opt/geoip
+    wget http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz
+    wget http://geolite.maxmind.com/download/geoip/database/GeoLite2-ASN.tar.gz
+    for tarfile in *.tar.gz ; do tar xzvf $tarfile ; done
+    find . -name \*.mmdb -exec mv {} . \;
+    for tgt in `ls -d */` ; do rm -v $tgt; done
+    for tgt in `ls -d *.gz` ; do rm -v $tgt; done
     apt-get update
     apt-get install -y logstash
     cp /opt/tpot/etc/objects/logstash.conf /etc/logstash/conf.d/
