@@ -485,7 +485,7 @@ sed -e 's:tsec:'$myuser':g' -i /usr/share/nginx/html/navbar.html
 ln -s /etc/nginx/sites-available/tpotweb.conf /etc/nginx/sites-enabled/tpotweb.conf 
 
 # Let's take care of some files and permissions
-chmod 760 -R /data 
+chmod 770 -R /data 
 chown tpot:tpot -R /data 
 chmod 600 /home/$myuser/.ssh/authorized_keys 
 chown $myuser:$myuser /home/$myuser/.ssh /home/$myuser/.ssh/authorized_keys 
@@ -538,6 +538,7 @@ case $mode in
     cp /opt/tpot/etc/objects/logstash.conf /etc/logstash/conf.d/
     systemctl enable logstash
     systemctl start logstash
+    find /data -type f -exec chmod g+r {} \;
   ;;
 esac
 
